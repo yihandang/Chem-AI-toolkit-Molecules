@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Checking AI answers in Chemistry: practice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F9F1DC;--ink:#2E2418;--ok:#4A7A3F;--no:#A8452C;--hint:#D9922E;--panel:#D9D9D9;--acc:#E8A33D;
+--pix:"Press Start 2P",ui-monospace,"Courier New",monospace;--body:"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font-family:var(--body);font-size:17px;line-height:1.6;-webkit-text-size-adjust:100%}
+.wrap{max-width:760px;margin:0 auto;padding:12px 14px 0}
+h1,h2,h3,.ct{font-family:var(--pix);font-weight:400;line-height:1.6;letter-spacing:.5px}
+h1{font-size:22px;margin:0 0 14px}
+h2{font-size:17px;margin:0 0 16px}
+h3{font-size:14px;margin:20px 0 10px}
+h1:focus,h2:focus{outline:none}
+p{margin:0 0 12px}
+sub,sup{font-size:.72em;line-height:0}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.sky{height:30px;position:relative;margin-bottom:4px}
+.sky svg{position:absolute;top:2px}
+.bar{border:3px solid var(--ink);background:var(--panel);padding:8px 12px;margin-bottom:16px;display:flex;flex-wrap:wrap;align-items:center;gap:4px 20px;font-weight:700;font-size:16px}
+.bar .fin{width:auto;margin:0 0 0 auto;padding:6px 12px;box-shadow:3px 3px 0 var(--ink);font-weight:700}
+.btn,.card{display:block;width:100%;text-align:left;font:inherit;color:var(--ink);background:var(--bg);border:3px solid var(--ink);border-radius:0;box-shadow:4px 4px 0 var(--ink);padding:12px 14px;margin:0 0 14px;cursor:pointer}
+.btn:hover,.card:hover{background:#fff}
+.btn:active,.card:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
+.btn:focus-visible,.card:focus-visible{outline:4px solid var(--ink);outline-offset:4px}
+.card{background:var(--acc);padding:16px 14px}
+.card .ct{display:block;font-size:15px;margin-bottom:10px}
+.card .cs{display:block;font-size:16px;line-height:1.45}
+.card.lock{background:var(--panel);border-style:dashed;box-shadow:none;cursor:not-allowed}
+.card.lock:hover{background:var(--panel)}
+.card.lock:active{transform:none}
+.card.lock .ct{opacity:.75}
+.row{display:flex;flex-wrap:wrap;gap:0 14px}
+.row .btn{width:auto;flex:1 1 180px}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.tags span{border:3px solid var(--ink);background:var(--panel);padding:3px 9px;font-size:16px;font-weight:700}
+.tags .d{background:var(--acc)}
+.ai{border:4px double var(--ink);background:#fff;padding:12px 14px;margin:0 0 16px}
+.ai b{display:block;border-bottom:3px solid var(--ink);margin:0 0 10px;padding-bottom:6px}
+.note{border-left:8px solid var(--ink);background:var(--panel);padding:10px 12px;margin:0 0 16px}
+.note.h{border-left-color:var(--hint);background:#fff}
+.hbtn{background:var(--panel)}
+.lab{display:block;font-weight:700}
+.verdict{border:3px solid var(--ink);padding:10px 14px;margin:0 0 16px;font-size:20px;font-weight:700;color:#fff}
+.verdict.y{background:var(--ok)}
+.verdict.n{background:var(--no)}
+.unl{border:3px solid var(--ink);background:var(--acc);padding:10px 14px;margin:0 0 16px;font-weight:700}
+.pts{border:3px solid var(--ink);background:var(--panel);padding:8px 14px;margin:0 0 16px;font-weight:700}
+.hr{border:0;border-top:3px solid var(--ink);margin:20px 0}
+table{border-collapse:collapse;width:100%;margin:0 0 18px;font-size:16px}
+caption{text-align:left;font-weight:700;margin-bottom:6px}
+th,td{border:2px solid var(--ink);padding:6px 8px;text-align:left}
+thead th{background:var(--panel)}
+td.n{text-align:center;width:5.5em}
+.ground{margin-top:28px;height:34px;border-top:3px solid var(--ink);background:
+linear-gradient(var(--ok),var(--ok)) 0 0/100% 8px no-repeat,
+repeating-linear-gradient(90deg,#8a6a45 0 16px,#7a5c3a 16px 32px) 0 8px/100% 26px no-repeat}
+@media(max-width:560px){.sky{height:6px}.sky svg{display:none}h1{font-size:16px}h2{font-size:14px}h3{font-size:12px}.card .ct{font-size:12px}.btn,.card{box-shadow:3px 3px 0 var(--ink)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="sky" aria-hidden="true">
+<svg style="left:0" width="72" height="26" viewBox="0 0 36 13"><g fill="#2E2418"><rect x="6" y="2" width="18" height="2"/><rect x="4" y="4" width="24" height="2"/><rect x="2" y="6" width="30" height="2"/><rect x="4" y="8" width="26" height="2"/></g></svg>
+<svg style="right:0" width="56" height="22" viewBox="0 0 28 11"><g fill="#2E2418"><rect x="5" y="2" width="14" height="2"/><rect x="3" y="4" width="20" height="2"/><rect x="2" y="6" width="22" height="2"/></g></svg>
+</div>
+<h1>Checking AI answers in Chemistry</h1>
+<div class="bar" id="bar"></div>
+<main id="app"></main>
+<div id="sr" class="vh" role="status" aria-live="polite"></div>
+<div class="ground" aria-hidden="true"></div>
+</div>
+<script>
+(function(){
+var Q=[
+/* ---------- REPRESENTATION ---------- */
+{c:"rep",t:"Lewis structure",d:2, 
+ ai:"Here is the Lewis structure of the ammonium ion, NH<sub>4</sub><sup>+</sup>. Nitrogen is the central atom. It has four single N&ndash;H bonds and one lone pair. The formal charge on nitrogen is +1.",
+ o:[
+  {x:"Sound",ok:0,f:"The formal charge is right, but the structure is not. NH<sub>4</sub><sup>+</sup> has 5 + 4 &minus; 1 = 8 valence electrons. That is four pairs, and all four are used in the N&ndash;H bonds. There are none left for a lone pair."},
+  {x:"Not sound &mdash; nitrogen is given a lone pair, but all eight valence electrons are already used in the four N&ndash;H bonds.",ok:1,f:"Correct. The electron count settles it: 8 electrons, four pairs, four bonds, nothing left over."},
+  {x:"Not sound &mdash; the formal charge on nitrogen should be zero, not +1.",ok:0,f:"The formal charge is correct as written. Nitrogen with four bonds and no lone pairs gives 5 &minus; 0 &minus; 4 = +1. The fault is the extra lone pair."}
+ ],
+ r:"NH<sub>4</sub><sup>+</sup> has 8 valence electrons: 5 from N, 4 from the hydrogens, minus 1 for the positive charge. Four pairs, four N&ndash;H bonds, no lone pair on nitrogen. Formal charge on N = 5 &minus; 0 &minus; 4 = +1, which is what makes the ion positive."},
+
+{c:"rep",t:"Lewis structure",d:3, 
+ ai:"The formate ion, CHO<sub>2</sub><sup>&minus;</sup>: carbon is the central atom, bonded to H, to one oxygen by a double bond and to the other oxygen by a single bond. The singly bonded oxygen has three lone pairs and a formal charge of &minus;1. The double bonded oxygen has two lone pairs and a formal charge of 0. Carbon and hydrogen are both 0. This is the structure of formate.",
+ o:[
+  {x:"Sound",ok:0,f:"Every formal charge here is correct, which is why this one is hard. The problem is the last sentence. Swapping which oxygen holds the double bond gives a second structure that is just as valid, so formate has two resonance forms, not one."},
+  {x:"Not sound &mdash; the formal charge on the singly bonded oxygen should be 0.",ok:0,f:"That oxygen has three lone pairs and one bond: 6 &minus; 6 &minus; 1 = &minus;1. The charge is right."},
+  {x:"Not sound &mdash; the second resonance form is missing. Moving the double bond to the other oxygen gives an equally valid structure.",ok:1,f:"Correct. All the working shown is right, so the fault is what was left out. Formate is a resonance hybrid of two structures."}
+ ],
+ r:"The formal charges are all correct. The fault is an omission. Formate has two resonance forms: the double bond can sit on either oxygen, and both structures are equally valid. The real ion is a hybrid, with both C&ndash;O bonds identical."},
+
+{c:"rep",t:"VSEPR shape",d:1, 
+ ai:"COCl<sub>2</sub> has a central carbon with one C=O double bond and two C&ndash;Cl single bonds. Carbon has three electron domains and no lone pairs. The shape is trigonal pyramidal.",
+ o:[
+  {x:"Sound",ok:0,f:"The domain count is right but the shape name is not. Three bonding domains with no lone pair is trigonal planar. Trigonal pyramidal needs three bonding domains plus one lone pair."},
+  {x:"Not sound &mdash; the C=O double bond should count as two domains, giving four domains and a tetrahedral shape.",ok:0,f:"In VSEPR a double bond is one domain. The two shared pairs sit in the same region of space, so they repel other domains as a single group."},
+  {x:"Not sound &mdash; the domain count is right but the shape name is wrong. Three domains and no lone pairs is trigonal planar.",ok:1,f:"Correct. MX<sub>3</sub> is trigonal planar, with bond angles of about 120&deg;."}
+ ],
+ r:"Carbon in COCl<sub>2</sub> has three electron domains and no lone pairs, so the notation is MX<sub>3</sub> and the shape is trigonal planar. All four atoms lie in one plane, at roughly 120&deg;."},
+
+{c:"rep",t:"VSEPR shape",d:2, 
+ ai:"H<sub>2</sub>Se has a central selenium atom with two Se&ndash;H bonds and two lone pairs. That is four electron domains: two bonding and two non-bonding. The molecular shape is bent.",
+ o:[
+  {x:"Sound",ok:1,f:"Correct. Four domains, two of them lone pairs. MX<sub>2</sub>E<sub>2</sub> is bent, the same as water."},
+  {x:"Not sound &mdash; four electron domains always means the shape is tetrahedral.",ok:0,f:"Four domains give a tetrahedral arrangement of the domains, but the shape name describes only where the atoms are. With two lone pairs, only three atoms are placed, so the shape is bent."},
+  {x:"Not sound &mdash; selenium is a large atom, so its lone pairs sit far apart and the molecule is linear.",ok:0,f:"Lone pairs on the central atom always push the bonded atoms together. Selenium sits below oxygen in the same group and has the same domain count as water, so H<sub>2</sub>Se is bent."}
+ ],
+ r:"Selenium has 6 valence electrons: two are used in Se&ndash;H bonds and four stay as two lone pairs. MX<sub>2</sub>E<sub>2</sub>, bent. This looks suspicious because four domains suggests tetrahedral, but the shape name counts atoms, not domains."},
+
+{c:"rep",t:"Net ionic equation",d:2, 
+ ai:"BaBr<sub>2</sub>(aq) + Na<sub>2</sub>SO<sub>4</sub>(aq) &rarr; BaSO<sub>4</sub>(s) + 2NaBr(aq)<br><br>Net ionic equation: Ba<sup>2+</sup>(aq) + SO<sub>4</sub><sup>2&minus;</sup>(aq) &rarr; BaSO<sub>4</sub>(s)",
+ o:[
+  {x:"Not sound &mdash; Na<sup>+</sup> and Br<sup>&minus;</sup> have been deleted from the net ionic equation.",ok:0,f:"Deleting them is the point. Sodium and bromide appear unchanged on both sides, so they are spectator ions and must be removed."},
+  {x:"Sound",ok:1,f:"Correct. Atoms balance, charges balance (+2 and &minus;2 give 0, matching neutral BaSO<sub>4</sub>), spectators removed, state symbols present."},
+  {x:"Not sound &mdash; the charges do not balance, because the left side has ions and the right side is neutral.",ok:0,f:"Add the left-hand charges: (+2) + (&minus;2) = 0. That matches the neutral solid on the right. They do balance."}
+ ],
+ r:"Barium sulfate is insoluble, so it precipitates. Sodium and bromide stay in solution unchanged and are removed as spectator ions. The equation balances for atoms and for charge, and every species carries a state symbol."},
+
+{c:"rep",t:"Net ionic equation",d:1, 
+ ai:"2NaCl(aq) + Pb(NO<sub>3</sub>)<sub>2</sub>(aq) &rarr; PbCl<sub>2</sub>(s) + 2NaNO<sub>3</sub>(aq)<br><br>Net ionic equation: Pb<sup>2+</sup>(aq) + Cl<sup>&minus;</sup>(aq) &rarr; PbCl<sub>2</sub>(s)",
+ o:[
+  {x:"Sound",ok:0,f:"Count the chlorine. One Cl<sup>&minus;</sup> on the left, two chlorines inside PbCl<sub>2</sub> on the right. The charges do not balance either: +1 on the left, 0 on the right."},
+  {x:"Not sound &mdash; the chloride needs a coefficient of 2. As written, neither the atoms nor the charges balance.",ok:1,f:"Correct. It should read Pb<sup>2+</sup>(aq) + 2Cl<sup>&minus;</sup>(aq) &rarr; PbCl<sub>2</sub>(s)."},
+  {x:"Not sound &mdash; lead(II) chloride is soluble, so no precipitate forms.",ok:0,f:"The solubility table lists lead(II) chloride as insoluble. A precipitate does form. The fault is in the balancing."}
+ ],
+ r:"The molecular equation is right. The net ionic equation dropped the coefficient on chloride. Correct version: Pb<sup>2+</sup>(aq) + 2Cl<sup>&minus;</sup>(aq) &rarr; PbCl<sub>2</sub>(s). Now two chlorines on each side, and (+2) + 2(&minus;1) = 0."},
+
+/* ---------- EXPLANATION ---------- */
+{c:"exp",t:"Shape",d:2, 
+ ai:"CS<sub>2</sub> has a central carbon joined to each sulfur by a double bond, and carbon has no lone pairs. Two electron domains repel each other as far as possible, which is 180&deg;, so the molecule is linear.",
+ o:[
+  {x:"Not sound &mdash; each double bond counts as two domains, so there are four domains and the shape is bent.",ok:0,f:"A double bond is one domain in VSEPR. Both shared pairs occupy the same region of space, so they act as one group."},
+  {x:"Not sound &mdash; the lone pairs on the sulfur atoms were not counted, so the shape should be bent.",ok:0,f:"Only lone pairs on the central atom change the shape. The sulfur atoms are outer atoms, and their lone pairs do not affect the C&ndash;S&ndash;C arrangement."},
+  {x:"Sound",ok:1,f:"Correct. Two bonding domains, no lone pairs on carbon: MX<sub>2</sub>, linear, 180&deg;."}
+ ],
+ r:"Carbon in CS<sub>2</sub> has two electron domains, both bonding, both double bonds. MX<sub>2</sub> is linear with a bond angle of 180&deg;. The lone pairs on the outer sulfur atoms do not enter the shape calculation."},
+
+{c:"exp",t:"Shape",d:2, 
+ ai:"In CH<sub>3</sub>Cl the central carbon has four bonding domains and no lone pairs. Because one attached atom is chlorine and the other three are hydrogen, the molecule is not symmetrical, so the shape is trigonal pyramidal.",
+ o:[
+  {x:"Sound",ok:0,f:"The domain count is right, and it fixes the shape on its own. Four bonding domains and no lone pairs is tetrahedral. Having one different outer atom changes the polarity, not the shape name."},
+  {x:"Not sound &mdash; the shape is tetrahedral. Four bonding domains with no lone pairs give tetrahedral, whatever the outer atoms are.",ok:1,f:"Correct. The different outer atom matters later, when you work out polarity. It does not change the geometry."},
+  {x:"Not sound &mdash; carbon carries a lone pair in CH<sub>3</sub>Cl, and that is what makes the shape pyramidal.",ok:0,f:"Carbon has four valence electrons and uses all four in bonds. There is no lone pair on carbon here."}
+ ],
+ r:"CH<sub>3</sub>Cl is MX<sub>4</sub>: four bonding domains, no lone pairs, tetrahedral, about 109.5&deg;. The shape depends on the domain count. Which atoms sit at the corners affects polarity, and the molecule is polar for that reason, but the shape stays tetrahedral."},
+
+{c:"exp",t:"Polarity",d:2, 
+ ai:"SF<sub>2</sub> is polar. Sulfur has two bonding pairs and two lone pairs, so the molecule is bent. Fluorine is much more electronegative than sulfur, so each S&ndash;F bond has a large dipole pointing towards fluorine. In a bent shape those two dipoles do not cancel, so the molecule has a net dipole.",
+ o:[
+  {x:"Sound",ok:1,f:"Correct. Shape first, then dipoles, then cancellation. Bent shape, two equal dipoles at an angle, no cancellation."},
+  {x:"Not sound &mdash; the two S&ndash;F dipoles are equal in size, so they must cancel.",ok:0,f:"Equal dipoles cancel only when they point in opposite directions. In a bent molecule they point apart at an angle, so they add to give a net dipole."},
+  {x:"Not sound &mdash; the lone pairs on sulfur cancel the bond dipoles, making SF<sub>2</sub> non-polar.",ok:0,f:"Lone pairs on the central atom are regions of negative charge. They add to the dipole rather than cancelling it."}
+ ],
+ r:"Sulfur has 6 valence electrons: two S&ndash;F bonds and two lone pairs, so MX<sub>2</sub>E<sub>2</sub>, bent. &Delta;EN for S&ndash;F is 4.0 &minus; 2.5 = 1.5, so each bond is strongly polar. The bent shape stops the dipoles cancelling. SF<sub>2</sub> is polar."},
+
+{c:"exp",t:"Polarity",d:1, 
+ ai:"BF<sub>3</sub> is polar. Fluorine is far more electronegative than boron, so each B&ndash;F bond carries a large dipole. A molecule with large bond dipoles is a polar molecule.",
+ o:[
+  {x:"Not sound &mdash; the B&ndash;F bond is not polar, because boron and fluorine have similar electronegativities.",ok:0,f:"Fluorine is 4.0 and boron is about 2.0, a difference of 2.0. The bonds are strongly polar. The fault is at a later step."},
+  {x:"Sound",ok:0,f:"The bonds are polar, but that is only the first step. BF<sub>3</sub> is trigonal planar with three identical fluorine atoms, so the three equal dipoles sit 120&deg; apart and cancel exactly. The molecule is non-polar."},
+  {x:"Not sound &mdash; the shape was never checked. BF<sub>3</sub> is trigonal planar with three identical outer atoms, so the three dipoles cancel and the molecule is non-polar.",ok:1,f:"Correct. Polar bonds are necessary for a polar molecule, but not sufficient. The shape decides whether the dipoles cancel."}
+ ],
+ r:"Boron in BF<sub>3</sub> has three bonding domains and no lone pairs, so the shape is trigonal planar at 120&deg;. The three B&ndash;F dipoles are equal in size and evenly spaced, so they cancel. BF<sub>3</sub> has polar bonds and no net dipole."},
+
+{c:"exp",t:"Intermolecular forces",d:2, 
+ ai:"Fluoroethane, CH<sub>3</sub>CH<sub>2</sub>F, shows hydrogen bonding. It contains fluorine, which is highly electronegative, and it contains hydrogen atoms, so hydrogen bonds form between the molecules.",
+ o:[
+  {x:"Sound",ok:0,f:"Containing fluorine is not enough. Hydrogen bonding needs a hydrogen bonded directly to N, O or F. Every hydrogen in fluoroethane is bonded to carbon."},
+  {x:"Not sound &mdash; fluoroethane is non-polar, so only dispersion forces act.",ok:0,f:"The C&ndash;F bond gives the molecule a permanent dipole, so dipole-dipole forces act as well as dispersion. Hydrogen bonding is the part that is wrong."},
+  {x:"Not sound &mdash; having fluorine in the molecule is not enough. Hydrogen bonding needs a hydrogen bonded directly to N, O or F, and every hydrogen here is on a carbon.",ok:1,f:"Correct. Fluoroethane has dispersion forces and dipole-dipole forces, and no hydrogen bonding."}
+ ],
+ r:"Hydrogen bonding needs two things: a hydrogen bonded directly to N, O or F, and a lone pair on N, O or F to attract it. Fluoroethane has the lone pairs but its hydrogens are all on carbon. Forces present: van der Waals dispersion and dipole-dipole."},
+
+{c:"exp",t:"Intermolecular forces",d:2, 
+ ai:"Hexane, CH<sub>3</sub>CH<sub>2</sub>CH<sub>2</sub>CH<sub>2</sub>CH<sub>2</sub>CH<sub>3</sub>, is a liquid at room temperature because its molecules are held together by dipole-dipole forces. Every C&ndash;H bond is polar, so the molecule has a permanent dipole.",
+ o:[
+  {x:"Not sound &mdash; hexane is held together by hydrogen bonding, because it contains many hydrogen atoms.",ok:0,f:"Hydrogen bonding needs a hydrogen bonded directly to N, O or F. Hexane contains only carbon and hydrogen, so there is none."},
+  {x:"Not sound &mdash; hexane has no permanent dipole. The small C&ndash;H dipoles cancel across the molecule, so the only force is van der Waals dispersion.",ok:1,f:"Correct. Hexane is a liquid because it is a large molecule with many electrons, which makes its dispersion forces strong."},
+  {x:"Sound",ok:0,f:"&Delta;EN for C&ndash;H is 2.5 &minus; 2.1 = 0.4, which your polarity sheet classifies as non-polar. Even the small dipoles that exist cancel across the molecule, so there is no permanent dipole and no dipole-dipole force."}
+ ],
+ r:"C&ndash;H bonds have &Delta;EN of 0.4, treated as non-polar, and any small dipoles cancel over the whole molecule. Hexane has van der Waals dispersion forces only. It is still a liquid at room temperature because the molecule is long and electron-rich, so the dispersion forces are strong."},
+
+{c:"exp",t:"Observable property",d:3, 
+ ai:"Hydrogen iodide boils at a higher temperature than hydrogen bromide. Iodine is less electronegative than bromine, so the H&ndash;I bond is more polar. Stronger dipole-dipole forces need more energy to overcome, which is why HI boils higher.",
+ o:[
+  {x:"Sound",ok:0,f:"The conclusion is right and the reasoning is not, which is the hardest case to spot. Less electronegative means a smaller electronegativity difference, so H&ndash;I is less polar than H&ndash;Br, and its dipole-dipole forces are weaker. HI boils higher for a different reason."},
+  {x:"Not sound &mdash; HI actually boils at a lower temperature than HBr, so the conclusion is wrong.",ok:0,f:"HBr boils at 206 K and HI at 238 K, so HI does boil higher. The conclusion is right. What fails is the reason given for it."},
+  {x:"Not sound &mdash; the conclusion is right but the reason is wrong. Less electronegative means a smaller dipole, so dipole-dipole forces get weaker down the group.",ok:1,f:"Correct. The real cause is dispersion: iodine has more electrons than bromine, so its temporary dipoles are larger."}
+ ],
+ r:"HBr boils at 206 K, HI at 238 K, so the conclusion is right. The reason is not. Going down the group the halogen gets less electronegative, so the permanent dipole gets smaller and dipole-dipole forces weaken. The boiling point rises because the halogen has more electrons, giving larger temporary dipoles and stronger van der Waals dispersion forces. A correct answer built on broken reasoning is still a broken answer."},
+
+{c:"exp",t:"Observable property",d:3,
+ p:"An AI tool produced this explanation. Is the reasoning sound?",
+ ai:"&ldquo;Ethanol dissolves in water but hexane does not, because ethanol is a smaller molecule.&rdquo;",
+ o:[
+  {x:"Sound",ok:0,f:"The conclusion is correct, which is what makes this one difficult. Check the reason, not just the answer &mdash; size is not why ethanol dissolves."},
+  {x:"Not sound &mdash; molecular size is not what decides this",ok:1,f:"Correct."},
+  {x:"Not sound &mdash; hexane is polar, so it should dissolve",ok:0,f:"Hexane is not polar. It is a symmetrical hydrocarbon with only dispersion forces, which is exactly why it does not dissolve in water."}
+ ],
+ r:"The conclusion is right but the reasoning is not. Ethanol has an O&ndash;H group, so it can hydrogen bond with water. Hexane has only dispersion forces and cannot replace the hydrogen bonds between water molecules. Size is not the deciding factor &mdash; hexane is larger than ethanol, but methane is smaller and still does not dissolve. Follow the chain: shape, polarity, forces, then the property."},
+
+/* ---------- REFERENCE ---------- */
+{c:"ref",t:"Reference",d:3, 
+ ai:"Barium sulfate is used as a contrast agent in medical imaging because it is insoluble in water and is therefore not absorbed by the body.<br><br>Source: Author, A. (2019). Solubility rules for Group 2 sulfates. <em>Journal of Chemical Education Research</em>, 44(3), 210&ndash;218.",
+ s:"You searched the journal and found an article with exactly that title. You opened it. It reports measured solubility values for Group 2 sulfates at different temperatures. It never mentions medical imaging.",
+ o:[
+  {x:"Sound &mdash; the source exists and the title matches the topic, so the citation stands.",ok:0,f:"Matching a title only shows the source exists. A citation has to support the specific claim in the sentence. This article says nothing about imaging, so it cannot be cited for the imaging claim."},
+  {x:"Not sound &mdash; the citation does not support the claim. Finding the title proves only that the source exists. You have to read it and check that it says what was claimed.",ok:1,f:"Correct. Split the sentence: the source supports the solubility part, and nothing supports the imaging part. Find a separate source for that, or cut the claim."},
+  {x:"Not sound &mdash; the chemistry is wrong, because barium sulfate is soluble.",ok:0,f:"The solubility table lists barium sulfate as insoluble, so the chemistry is right. The fault is in the citation."}
+ ],
+ r:"A citation has to support the claim, not just share a topic. Here the article backs the insolubility but says nothing about medical imaging, so it cannot be cited for that. Your options: find a source that does cover the imaging use, or remove the imaging claim. Finding the title is the start of the check, not the end of it."},
+
+{c:"ref",t:"Reference",d:2, 
+ ai:"Water has a much higher boiling point than the other Group 16 hydrides, because water molecules form hydrogen bonds and the others do not.<br><br>Source: Author, A. (2019). Anomalous boiling behaviour in hydrogen-bonded liquids. <em>Journal of Chemical Education Research</em>, 44(3), 210&ndash;218.",
+ s:"You searched the journal's own website and a scholarly search engine. The article does not exist. You then checked the claim in your textbook, found it there, cited the textbook instead, and kept the sentence.",
+ o:[
+  {x:"Sound &mdash; you checked, the citation failed, you replaced it with a source you had read, and you kept a claim you had verified.",ok:1,f:"Correct. A citation that cannot be found is unusable, and it tells you nothing about whether the chemistry is right. You tested the two things separately, which is the whole procedure."},
+  {x:"Not sound &mdash; once a citation cannot be found, the sentence must be deleted.",ok:0,f:"A failed citation tells you the citation is unusable. It says nothing about the chemistry. You checked the chemistry separately, found it in a source you read, and cited that. The sentence can stay."},
+  {x:"Not sound &mdash; you should have cited the journal article anyway, since the AI must have taken it from somewhere.",ok:0,f:"Never cite something you have not opened. If you cannot find it, you cannot cite it, whatever you assume about where it came from."}
+ ],
+ r:"A citation you cannot locate is unusable, and it is a warning that the rest of the output needs checking too. It is not proof that the chemistry is wrong. Test the two things separately: check the claim against a source you can open, then cite that source. Here the claim held up, so the sentence stays with a new citation."}
+];
+var H={
+"Lewis structure":"Count valence electrons. Check formal charges.",
+"VSEPR shape":"Count electron domains. Were the lone pairs counted?",
+"Net ionic equation":"Cancel spectators. Balance atoms and charge. Check state symbols.",
+"Shape":"Count the domains.",
+"Polarity":"Electronegativity, then symmetry. Polar bonds do not mean a polar molecule.",
+"Intermolecular forces":"Is hydrogen bonded to N, O or F? Is there a net dipole? Dispersion forces are always present.",
+"Observable property":"Stronger forces, higher boiling point. For solubility, compare the forces in solute and solvent.",
+"Reference":"Search for the original. Cannot find it? It does not exist. Found it? Open it and check it says what was claimed."
+};
+var TOP=["Lewis structure","VSEPR shape","Net ionic equation","Shape","Polarity","Intermolecular forces","Observable property","Reference"];
+var CAT={rep:"Representation",exp:"Explanation",ref:"Reference"};
+var DIF={1:"Easy",2:"Medium",3:"Hard"};
+var UNLOCK="Unlocked. You checked two representations without help \u2014 the same approach works for explanations, but the checks are different.";
+var COND="Get two representation questions right without a hint";
+var app=document.getElementById("app"),barEl=document.getElementById("bar"),sr=document.getElementById("sr");
+var S={open:false,gate:0};
+function reset(){S.score=0;S.att=0;S.st={};S.qs={};S.mode=null;S.cur=null;S.last=null;
+ for(var i=0;i<TOP.length;i++)S.st[TOP[i]]={a:0,c:0,h:0}}
+reset();
+
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
+function pool(m){return Q.filter(function(q){return m==="all"||q.c===m||q.t===m})}
+function modeName(m){return m==="all"?"Random":CAT[m]||m}
+function say(t){sr.textContent="";setTimeout(function(){sr.textContent=t},60)}
+function bar(q,end){barEl.innerHTML="<span>Score: "+S.score+"</span><span>Attempted: "+S.att+"</span>"+(q?"<span>Difficulty: "+DIF[q.d]+"</span>":"")+(end?"":'<button class="btn fin" data-act="finish">Finish</button>')}
+function show(h,q,end){app.innerHTML=h;bar(q,end);var el=app.querySelector("h2");if(el){el.setAttribute("tabindex","-1");el.focus()}window.scrollTo(0,0)}
+function strip(h){var d=document.createElement("div");d.innerHTML=h;return d.textContent}
+
+function next(m){
+ var s=S.qs[m];
+ if(!s||!s.left.length){
+  var p=shuffle(pool(m));
+  if(p.length>1&&p[p.length-1]===S.last){var t=p[0];p[0]=p[p.length-1];p[p.length-1]=t}
+  s=S.qs[m]={left:p,n:p.length,round:s?s.round+1:1};
+ }
+ S.cur=s.left.pop();S.mode=m;S.pos=s.n-s.left.length;S.round=s.round;
+ ask();
+}
+
+function card(m,lvl,desc){
+ var name=(lvl?"Level "+lvl+": ":"")+modeName(m);
+ if(m==="rep"||S.open)return '<button class="card" data-act="go" data-m="'+m+'"><span class="ct">'+name+'</span><span class="cs">Open. '+desc+'</span></button>';
+ return '<button class="card lock" aria-disabled="true" data-act="locked"><span class="ct">'+name+' <span aria-hidden="true">&#128274;</span></span><span class="cs">Locked. '+COND+'. Done so far: '+S.gate+' of 2.</span></button>';
+}
+function levels(){
+ var h='<h2>Choose a level</h2><p>Each question shows something an AI produced. Decide if it is sound. If it is not, choose what went wrong.</p>';
+ h+=card("rep",1,"6 questions. Lewis structures, VSEPR shapes, net ionic equations.");
+ h+=card("exp",2,"8 questions. Shape, polarity, intermolecular forces, observable properties.");
+ h+=card("ref",3,"2 questions. Check whether a source says what the AI claimed.");
+ h+=card("all",0,"All 16 questions in a random order.");
+ h+='<div class="note"><p><span class="lab">Scoring</span>Easy 1 point. Medium 2 points. Hard 3 points. A correct answer after a hint scores 1 point. A wrong answer scores 0.</p></div>';
+ show(h);
+}
+
+function ask(){
+ var q=S.cur;S.used=false;
+ var h='<h2>'+modeName(S.mode)+(S.mode.length>3?' only':'')+'</h2>';
+ h+='<p>Question '+S.pos+' of '+S.qs[S.mode].n+(S.round>1?', round '+S.round:'')+'</p>';
+ h+='<div class="tags"><span>'+CAT[q.c]+'</span><span>'+q.t+'</span><span class="d">'+DIF[q.d]+', '+q.d+(q.d>1?' points':' point')+'</span></div>';
+ h+='<div class="ai"><b>An AI tool produced this</b>'+q.ai+'</div>';
+ if(q.s)h+='<div class="note"><p><span class="lab">You checked it</span>'+q.s+'</p></div>';
+ h+='<h3 id="qp">'+(q.p||'Is this sound?')+'</h3><div role="group" aria-labelledby="qp">';
+ for(var i=0;i<q.o.length;i++)h+='<button class="btn" data-act="pick" data-i="'+i+'">'+q.o[i].x+'</button>';
+ h+='</div><div id="hint"><button class="btn hbtn" data-act="hint">Hint: show the check from the decision tree</button></div>';
+ h+='<hr class="hr"><button class="btn" data-act="levels">Back to levels</button>';
+ show(h,q);
+}
+
+function hint(){
+ if(S.used)return;S.used=true;
+ var box=document.getElementById("hint"),t=H[S.cur.t];
+ box.innerHTML='<div class="note h" tabindex="-1" id="hb"><p><span class="lab">Check from the decision tree: '+S.cur.t+'</span>'+t+'</p></div>';
+ document.getElementById("hb").focus();
+ say("Check from the decision tree. "+t);
+}
+
+function pick(i){
+ var q=S.cur,o=q.o[i],ok=!!o.ok,st=S.st[q.t],pts=ok?(S.used?1:q.d):0,unl=false;
+ S.score+=pts;S.att++;st.a++;if(ok)st.c++;if(S.used)st.h++;S.last=q;
+ if(ok&&!S.used&&q.c==="rep"&&!S.open){S.gate++;if(S.gate>=2){S.open=true;unl=true}}
+ var v=ok?"Correct":"Not correct";
+ var why=ok?(S.used?"correct after a hint":"correct without a hint"):"not correct";
+ var h='<h2>Feedback</h2><div class="verdict '+(ok?'y':'n')+'">'+v+'</div>';
+ if(unl)h+='<p class="unl">'+UNLOCK+'</p>';
+ h+='<div class="note"><p><span class="lab">You chose</span>'+o.x+'</p><p>'+o.f+'</p></div>';
+ h+='<h3>The full reasoning</h3><p>'+q.r+'</p>';
+ h+='<p class="pts">Points for this question: '+pts+' ('+why+').</p>';
+ h+='<div class="row"><button class="btn" data-act="next">Next question</button><button class="btn" data-act="levels">Back to levels</button></div>';
+ show(h,q);
+ say(v+". "+(unl?UNLOCK+" ":"")+"Points: "+pts+".");
+}
+
+function weakest(){
+ var w=null,m=-1,r=2;
+ TOP.forEach(function(t){var s=S.st[t];if(!s.a)return;var x=s.a-s.c,y=s.c/s.a;if(x>m||(x===m&&y<r)){w=t;m=x;r=y}});
+ if(m>0)return{t:w,why:"missed"};
+ var hw=null,hm=0;TOP.forEach(function(t){if(S.st[t].h>hm){hm=S.st[t].h;hw=t}});
+ return hw?{t:hw,why:"hint"}:null;
+}
+function branch(t){for(var i=0;i<Q.length;i++)if(Q[i].t===t)return CAT[Q[i].c];return""}
+
+function finish(){
+ var h='<h2>Your results</h2><p class="pts">Score: '+S.score+'. Questions attempted: '+S.att+'.</p>';
+ h+='<table><caption>Results by topic</caption><thead><tr><th scope="col">Topic</th><th scope="col">Correct</th><th scope="col">Attempted</th></tr></thead><tbody>';
+ TOP.forEach(function(t){var s=S.st[t];h+='<tr><th scope="row">'+t+'</th><td class="n">'+s.c+'</td><td class="n">'+s.a+'</td></tr>'});
+ h+='</tbody></table>';
+ var w=weakest();S.weak=w?w.t:null;
+ if(!S.att)h+='<div class="note"><p>Answer at least one question to see which topic to work on.</p></div>';
+ else if(w)h+='<div class="note h"><p>'+(w.why==="missed"?'You missed '+w.t+' most often.':'You used the hint most often on '+w.t+'.')+'</p><p><span class="lab">The check</span>'+H[w.t]+'</p><p>Go back to the '+branch(w.t)+' branch of the decision tree.</p></div>';
+ else{var un=TOP.filter(function(t){return!S.st[t].a});
+  h+='<div class="note"><p>You answered every question you tried correctly without a hint.'+(un.length?' Topics you have not tried yet: '+un.join(', ')+'.':'')+'</p></div>'}
+ h+='<div class="row"><button class="btn" data-act="again">Continue practising</button>'+(S.weak?'<button class="btn" data-act="weak">Practise '+S.weak+' only</button>':'')+'</div>';
+ show(h,null,true);
+}
+
+barEl.addEventListener("click",function(e){if(e.target.closest("[data-act=finish]"))finish()});
+app.addEventListener("click",function(e){
+ var b=e.target.closest("button[data-act]");if(!b)return;
+ var a=b.getAttribute("data-act");
+ if(a==="go")next(b.getAttribute("data-m"));
+ else if(a==="locked")say("Locked. "+COND+". Done so far: "+S.gate+" of 2.");
+ else if(a==="pick")pick(+b.getAttribute("data-i"));
+ else if(a==="hint")hint();
+ else if(a==="next")next(S.mode);
+ else if(a==="levels")levels();
+ else if(a==="finish")finish();
+ else if(a==="again")levels();
+ else if(a==="weak")next(S.weak);
+});
+levels();
+})();
+</script>
+</body>
+</html>
