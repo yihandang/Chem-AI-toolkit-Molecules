@@ -231,15 +231,19 @@ var Q=[
  r:"A citation you cannot locate is unusable, and it is a warning that the rest of the output needs checking too. It is not proof that the chemistry is wrong. Test the two things separately: check the claim against a source you can open, then cite that source. Here the claim held up, so the sentence stays with a new citation."}
 ];
 var H={
-"Lewis structure":"Count valence electrons. Check formal charges.",
-"VSEPR shape":"Count electron domains. Were the lone pairs counted?",
-"Net ionic equation":"Cancel spectators. Balance atoms and charge. Check state symbols.",
-"Shape":"Count the domains.",
-"Polarity":"Electronegativity, then symmetry. Polar bonds do not mean a polar molecule.",
-"Intermolecular forces":"Is hydrogen bonded to N, O or F? Is there a net dipole? Dispersion forces are always present.",
-"Observable property":"Stronger forces, higher boiling point. For solubility, compare the forces in solute and solvent.",
-"Reference":"Search for the original. Cannot find it? It does not exist. Found it? Open it and check it says what was claimed."
+"Lewis structure":"Manually count valence electrons and check the formal charges.",
+"VSEPR shape":"Count the electron domains; ensure lone pairs were included in the count.",
+"Net ionic equation":"Cancel spectator ions, balance atoms and charge, and verify all state symbols.",
+"Shape":"Count the domains to verify the molecular geometry.",
+"Polarity":"Check electronegativity then symmetry; remember that polar bonds do not always mean a polar molecule.",
+"Intermolecular forces":"Identify if hydrogen is bonded to N, O, or F. Look for net dipoles. Dispersion forces are always present.",
+"Observable property":"Stronger forces lead to higher boiling points. For solubility, compare solute and solvent forces.",
+"Reference":"Search for the original source. If it cannot be found, it does not exist. If found, open the source and verify if it actually says what the AI claimed."
 };
+var TA="Type A \u2014 Representation",TB="Type B \u2014 Explanation or Prediction";
+var LOC={"Lewis structure":TA+", Lewis Structure","VSEPR shape":TA+", VSEPR Shape","Net ionic equation":TA+", Net Ionic Equation",
+"Shape":TB+", 1. Shape","Polarity":TB+", 2. Polarity","Intermolecular forces":TB+", 3. Forces","Observable property":TB+", 4. Property",
+"Reference":"Type C \u2014 Reference or Source"};
 var TOP=["Lewis structure","VSEPR shape","Net ionic equation","Shape","Polarity","Intermolecular forces","Observable property","Reference"];
 var CAT={rep:"Representation",exp:"Explanation",ref:"Reference"};
 var DIF={1:"Easy",2:"Medium",3:"Hard"};
@@ -294,7 +298,7 @@ function ask(){
  if(q.s)h+='<div class="note"><p><span class="lab">You checked it</span>'+q.s+'</p></div>';
  h+='<h3 id="qp">'+(q.p||'Is this sound?')+'</h3><div role="group" aria-labelledby="qp">';
  for(var i=0;i<q.o.length;i++)h+='<button class="btn" data-act="pick" data-i="'+i+'">'+q.o[i].x+'</button>';
- h+='</div><div id="hint"><button class="btn hbtn" data-act="hint">Hint: show the check from the decision tree</button></div>';
+ h+='</div><div id="hint"><button class="btn hbtn" data-act="hint">Hint: show the check from the Verification Flow</button></div>';
  h+='<hr class="hr"><button class="btn" data-act="levels">Back to levels</button>';
  show(h,q);
 }
@@ -302,9 +306,9 @@ function ask(){
 function hint(){
  if(S.used)return;S.used=true;
  var box=document.getElementById("hint"),t=H[S.cur.t];
- box.innerHTML='<div class="note h" tabindex="-1" id="hb"><p><span class="lab">Check from the decision tree: '+S.cur.t+'</span>'+t+'</p></div>';
+ box.innerHTML='<div class="note h" tabindex="-1" id="hb"><p><span class="lab">Verification Flow: '+LOC[S.cur.t]+'</span>'+t+'</p></div>';
  document.getElementById("hb").focus();
- say("Check from the decision tree. "+t);
+ say("Verification Flow, "+LOC[S.cur.t]+". "+t);
 }
 
 function pick(i){
@@ -316,11 +320,12 @@ function pick(i){
  var h='<h2>Feedback</h2><div class="verdict '+(ok?'y':'n')+'">'+v+'</div>';
  if(unl)h+='<p class="unl">'+UNLOCK+'</p>';
  h+='<div class="note"><p><span class="lab">You chose</span>'+o.x+'</p><p>'+o.f+'</p></div>';
+ if(!ok)h+='<div class="note h"><p><span class="lab">Where to check</span>Go back to the Verification Flow: '+LOC[q.t]+'.</p></div>';
  h+='<h3>The full reasoning</h3><p>'+q.r+'</p>';
  h+='<p class="pts">Points for this question: '+pts+' ('+why+').</p>';
  h+='<div class="row"><button class="btn" data-act="next">Next question</button><button class="btn" data-act="levels">Back to levels</button></div>';
  show(h,q);
- say(v+". "+(unl?UNLOCK+" ":"")+"Points: "+pts+".");
+ say(v+". "+(unl?UNLOCK+" ":"")+(ok?"":"Go back to the Verification Flow: "+LOC[q.t]+". ")+"Points: "+pts+".");
 }
 
 function weakest(){
@@ -330,7 +335,6 @@ function weakest(){
  var hw=null,hm=0;TOP.forEach(function(t){if(S.st[t].h>hm){hm=S.st[t].h;hw=t}});
  return hw?{t:hw,why:"hint"}:null;
 }
-function branch(t){for(var i=0;i<Q.length;i++)if(Q[i].t===t)return CAT[Q[i].c];return""}
 
 function finish(){
  var h='<h2>Your results</h2><p class="pts">Score: '+S.score+'. Questions attempted: '+S.att+'.</p>';
@@ -339,7 +343,7 @@ function finish(){
  h+='</tbody></table>';
  var w=weakest();S.weak=w?w.t:null;
  if(!S.att)h+='<div class="note"><p>Answer at least one question to see which topic to work on.</p></div>';
- else if(w)h+='<div class="note h"><p>'+(w.why==="missed"?'You missed '+w.t+' most often.':'You used the hint most often on '+w.t+'.')+'</p><p><span class="lab">The check</span>'+H[w.t]+'</p><p>Go back to the '+branch(w.t)+' branch of the decision tree.</p></div>';
+ else if(w)h+='<div class="note h"><p>'+(w.why==="missed"?'You missed '+w.t+' most often.':'You used the hint most often on '+w.t+'.')+'</p><p><span class="lab">The check</span>'+H[w.t]+'</p><p>Go back to the Verification Flow: '+LOC[w.t]+'.</p></div>';
  else{var un=TOP.filter(function(t){return!S.st[t].a});
   h+='<div class="note"><p>You answered every question you tried correctly without a hint.'+(un.length?' Topics you have not tried yet: '+un.join(', ')+'.':'')+'</p></div>'}
  h+='<div class="row"><button class="btn" data-act="again">Continue practising</button>'+(S.weak?'<button class="btn" data-act="weak">Practise '+S.weak+' only</button>':'')+'</div>';
